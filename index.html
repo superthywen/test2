@@ -168,7 +168,7 @@
         <source src="video.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <video id="secondVideo" style="opacity: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 2400px; max-height: 1350px; object-fit: contain; pointer-events: none;">
+    <video id="secondVideo">
         <source src="video2.mp4" type="video/mp4">
     </video>
     <div id="catEars" onclick="window.location.href='https://www.cats.com';"></div>
@@ -225,10 +225,19 @@
             video.style.opacity = '0';
             document.body.style.backgroundColor = 'black';
             clearInterval(dotInterval);
+            setTimeout(showSwitchButton, 1000);
+        }
 
-            setTimeout(() => {
-                showSwitchButton();
-            }, 1000);
+        function playMainVideoAgain() {
+            secondVideo.pause();
+            secondVideo.style.opacity = '0';
+            content.style.display = 'none';
+            video.currentTime = 0;
+            video.style.opacity = '1';
+            video.play();
+            updateDate();
+            switchButton.classList.remove('show');
+            setTimeout(endVideoAndShowContent, 28000);
         }
 
         document.body.addEventListener('click', function () {
@@ -249,9 +258,13 @@
 
         switchButton.addEventListener('click', () => {
             content.style.opacity = '0';
+            video.pause();
+            video.style.opacity = '0';
             secondVideo.style.opacity = '1';
             secondVideo.play();
-            switchButton.style.display = 'none';
+            switchButton.classList.remove('show');
+
+            secondVideo.onended = playMainVideoAgain;
         });
 
         video.loop = false;
