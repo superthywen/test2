@@ -257,18 +257,21 @@
         });
 
         switchButton.addEventListener('click', () => {
-            content.style.opacity = '0';
-            video.pause();
+            video.pause(); // 🔧 stop first video
             video.style.opacity = '0';
+
+            secondVideo.currentTime = 0;
             secondVideo.style.opacity = '1';
             secondVideo.play();
-            switchButton.classList.remove('show');
 
-            secondVideo.onended = playMainVideoAgain;
+            content.style.opacity = '0';
+            switchButton.classList.remove('show');
         });
 
         video.loop = false;
         video.addEventListener('ended', endVideoAndShowContent);
+        secondVideo.addEventListener('ended', playMainVideoAgain);
+
         animateOverlayText();
     </script>
 </body>
