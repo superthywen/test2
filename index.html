@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate">
+    <title>👑</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Teko:wght@300..700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        #overlay {
+            color: white;
+            font-size: 22.5px;
+            font-family: 'Teko', sans-serif;
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+        }
+
+        video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(calc(-50% + 0.5%), -50%);
+            max-width: 2400px;
+            max-height: 1350px;
+            object-fit: contain;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        #secondVideo {
+            z-index: 6;
+        }
+
+        #catEars {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: #333;
+            border-radius: 50%;
+            background-image: url('cat-ear-icon.png');
+            background-size: cover;
+            transition: transform 0.3s ease, cursor 0.3s ease;
+            cursor: pointer;
+        }
+
+        #catEars:hover {
+            transform: scale(2);
+            cursor: pointer;
+        }
+
+        .bee {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: yellow;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: fly 8s linear infinite;
+        }
+
+        @keyframes fly {
+            0% { top: 10%; left: 10%; }
+            25% { top: 30%; left: 50%; }
+            50% { top: 50%; left: 90%; }
+            75% { top: 70%; left: 50%; }
+            100% { top: 90%; left: 10%; }
+        }
+
+        #content {
+            display: none;
+            color: white;
+            font-size: 30px;
+            font-family: 'Coming Soon', sans-serif;
+            position: absolute;
+            text-align: center;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        #clock {
+            color: white;
+            font-size: 60px;
+            font-family: 'Teko', sans-serif;
+            position: absolute;
+            bottom: 20px;
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        #date {
+            font-size: 30px;
+            margin-top: 10px;
+        }
+
+        #mobile-message {
+            display: none;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            font-family: 'Teko', sans-serif;
+        }
+
+        #switchButton {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-family: 'Teko', sans-serif;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid white;
+            border-radius: 8px;
+            opacity: 0;
+            transform: scale(1);
+            transition: opacity 1s ease, transform 0.5s ease;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        #switchButton.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1.6);
+            pointer-events: auto;
+        }
+
+        @media only screen and (max-width: 768px) {
+            #overlay, video, #catEars, .bee, #clock, #content, #switchButton {
+                display: none !important;
+            }
+
+            #mobile-message {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay">Press click to enter</div>
+    <video id="myVideo">
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <video id="secondVideo" style="opacity: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 2400px; max-height: 1350px; object-fit: contain; pointer-events: none;">
+        <source src="video2.mp4" type="video/mp4">
+    </video>
+    <div id="catEars" onclick="window.location.href='https://www.cats.com';"></div>
+    <div id="clock"><div id="date"></div></div>
+    <div id="content"><h1>Believe in Something👑</h1></div>
+    <div id="mobile-message">Website working only on PC</div>
+    <button id="switchButton">Watch More</button>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const secondVideo = document.getElementById('secondVideo');
+        const overlay = document.getElementById('overlay');
+        const clock = document.getElementById('clock');
+        const dateElement = document.getElementById('date');
+        const content = document.getElementById('content');
+        const switchButton = document.getElementById('switchButton');
+        const bee = document.createElement('div');
+        bee.classList.add('bee');
+        document.body.appendChild(bee);
+
+        let dotInterval;
+
+        function updateDate() {
+            const now = new Date();
+            const date = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dateElement.textContent = date;
+        }
+
+        function animateOverlayText() {
+            let dotCount = 0;
+            dotInterval = setInterval(() => {
+                overlay.textContent = `Press click to enter${'.'.repeat(dotCount)}`;
+                dotCount = (dotCount + 1) % 4;
+            }, 380);
+        }
+
+        function showSwitchButton() {
+            switchButton.classList.add('show');
+        }
+
+        function endVideoAndShowContent() {
+            content.style.display = 'block';
+            content.style.opacity = '0';
+            setTimeout(() => {
+                content.style.opacity = '1';
+            }, 10);
+            clock.style.display = 'block';
+            video.pause();
+            video.style.opacity = '0';
+            document.body.style.backgroundColor = 'black';
+            clearInterval(dotInterval);
+
+            setTimeout(() => {
+                showSwitchButton();
+            }, 1000);
+        }
+
+        document.body.addEventListener('click', function () {
+            overlay.style.display = 'none';
+            bee.style.display = 'none';
+
+            setTimeout(() => {
+                video.volume = 1.0;
+                video.style.opacity = '1';
+                clock.style.opacity = '1';
+                video.play();
+                updateDate();
+                setInterval(updateDate, 1000);
+            }, 1000);
+
+            setTimeout(endVideoAndShowContent, 28000);
+        });
+
+        switchButton.addEventListener('click', () => {
+            content.style.opacity = '0';
+            secondVideo.style.opacity = '1';
+            secondVideo.play();
+            switchButton.style.display = 'none';
+        });
+
+        video.loop = false;
+        video.addEventListener('ended', endVideoAndShowContent);
+        animateOverlayText();
+    </script>
+</body>
+</html>
