@@ -250,7 +250,9 @@
         switchButton.addEventListener('click', () => {
             video.pause();
             video.currentTime = 0;
+            video.muted = true;
             video.style.opacity = '0';
+
             content.style.opacity = '0';
             secondVideo.style.opacity = '1';
             secondVideo.play();
