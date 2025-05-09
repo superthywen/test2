@@ -22,7 +22,7 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            cursor: pointer;
+            cursor: default;
         }
 
         #overlay {
@@ -62,13 +62,12 @@
             border-radius: 50%;
             background-image: url('cat-ear-icon.png');
             background-size: cover;
-            transition: transform 0.3s ease, cursor 0.3s ease;
+            transition: transform 0.3s ease;
             cursor: pointer;
         }
 
         #catEars:hover {
             transform: scale(2);
-            cursor: pointer;
         }
 
         .bee {
@@ -168,7 +167,7 @@
         <source src="video.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <video id="secondVideo" style="opacity: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 2400px; max-height: 1350px; object-fit: contain; pointer-events: none;">
+    <video id="secondVideo">
         <source src="video2.mp4" type="video/mp4">
     </video>
     <div id="catEars" onclick="window.location.href='https://www.cats.com';"></div>
@@ -176,6 +175,8 @@
     <div id="content"><h1>Believe in Something👑</h1></div>
     <div id="mobile-message">Website working only on PC</div>
     <button id="switchButton">Thywen Prime</button>
+
+    <audio id="clickSound" src="click.mp3" preload="auto"></audio>
 
     <script>
         const video = document.getElementById('myVideo');
@@ -185,11 +186,13 @@
         const dateElement = document.getElementById('date');
         const content = document.getElementById('content');
         const switchButton = document.getElementById('switchButton');
+        const clickSound = document.getElementById('clickSound');
         const bee = document.createElement('div');
         bee.classList.add('bee');
         document.body.appendChild(bee);
 
         let dotInterval;
+        let firstClick = false;
 
         function updateDate() {
             const now = new Date();
@@ -231,7 +234,17 @@
             }, 1000);
         }
 
+        function showContentAfterSecondVideo() {
+            secondVideo.style.opacity = '0';
+            content.style.display = 'block';
+            content.style.opacity = '1';
+        }
+
         document.body.addEventListener('click', function () {
+            if (!firstClick) {
+                firstClick = true;
+                clickSound.play();
+            }
             overlay.style.display = 'none';
             bee.style.display = 'none';
 
@@ -252,13 +265,13 @@
             video.currentTime = 0;
             video.muted = true;
             video.style.opacity = '0';
-
             content.style.opacity = '0';
             secondVideo.style.opacity = '1';
             secondVideo.play();
             switchButton.style.display = 'none';
         });
 
+        secondVideo.addEventListener('ended', showContentAfterSecondVideo);
         video.loop = false;
         video.addEventListener('ended', endVideoAndShowContent);
         animateOverlayText();
